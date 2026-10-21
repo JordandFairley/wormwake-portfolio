@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wormwake · Jordan Fairley</title>
+<meta name="description" content="Design case study: Wormwake, a 1–4 player co-op survival game. Readability rules, AI-output curation, game feel and interface design by Jordan Fairley.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #14121c;
+    --bg-raised: #1d1a28;
+    --line: #2e2a3d;
+    --text: #ece6da;
+    --muted: #a59eb3;
+    --sand: #d9b77e;
+    --gleam: #3fd6d0;
+    --danger: #ff8c26;
+    --jade: #1aa06f;
+    --max: 1120px;
+    --gutter: clamp(16px, 4vw, 40px);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 400 17px/1.6 Inter, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  img, video { display: block; max-width: 100%; height: auto; }
+  a { color: var(--sand); text-underline-offset: 3px; }
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter); }
+
+  /* Top bar */
+  .bar { position: sticky; top: 0; z-index: 10; background: rgba(20, 18, 28, 0.86); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+  .bar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 56px; }
+  .bar strong { font-weight: 600; letter-spacing: 0.01em; }
+  .bar nav { display: flex; gap: 20px; overflow-x: auto; scrollbar-width: none; }
+  .bar nav a { color: var(--muted); text-decoration: none; font-size: 14px; white-space: nowrap; }
+  .bar nav a:hover { color: var(--text); }
+  @media (max-width: 760px) { .bar nav { display: none; } }
+
+  /* Hero */
+  .hero { position: relative; border-bottom: 1px solid var(--line); }
+  .hero video { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; max-height: 78vh; }
+  .hero-copy { padding-top: 40px; padding-bottom: 56px; }
+  .eyebrow { font-size: 13px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--sand); margin: 0 0 12px; }
+  h1, h2, h3 { font-family: Fraunces, Georgia, serif; font-weight: 700; line-height: 1.12; margin: 0; }
+  h1 { font-size: clamp(44px, 7vw, 80px); letter-spacing: -0.01em; }
+  .pitch { font-size: clamp(19px, 2.2vw, 23px); line-height: 1.5; max-width: 760px; margin: 16px 0 0; }
+  .role { color: var(--muted); max-width: 760px; margin: 16px 0 0; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0 0; padding: 0; list-style: none; }
+  .chips li { border: 1px solid var(--line); border-radius: 999px; padding: 5px 14px; font-size: 14px; color: var(--muted); }
+
+  /* Sections */
+  section.case { padding: 88px 0; border-bottom: 1px solid var(--line); }
+  .case-head { display: grid; grid-template-columns: 64px 1fr; gap: 0 20px; align-items: baseline; margin-bottom: 32px; }
+  .num { font-family: Fraunces, Georgia, serif; font-size: 22px; color: var(--sand); }
+  h2 { font-size: clamp(30px, 4vw, 44px); }
+  .lede { grid-column: 2; font-size: 19px; color: var(--muted); max-width: 720px; margin: 12px 0 0; }
+  @media (max-width: 640px) { .case-head { grid-template-columns: 1fr; } .lede { grid-column: 1; } }
+  h3 { font-size: 22px; margin: 40px 0 12px; }
+  p { margin: 0 0 16px; max-width: 720px; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+  @media (max-width: 860px) { .cols { grid-template-columns: 1fr; gap: 0; } }
+  ul.rules { list-style: none; padding: 0; margin: 0; }
+  ul.rules li { padding: 14px 0; border-top: 1px solid var(--line); }
+  ul.rules li:last-child { border-bottom: 1px solid var(--line); }
+  ul.rules b { display: block; font-weight: 600; margin-bottom: 2px; }
+
+  figure { margin: 32px 0 0; }
+  figure img, figure video { border-radius: 6px; border: 1px solid var(--line); background: var(--bg-raised); width: 100%; }
+  figcaption { font-size: 14px; color: var(--muted); margin-top: 10px; max-width: 720px; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .pair figure { margin-top: 0; }
+  .tag { display: inline-block; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 8px; border-radius: 4px; margin-bottom: 8px; }
+  .tag.cut { background: rgba(255, 140, 38, 0.14); color: var(--danger); }
+  .tag.kept { background: rgba(26, 160, 111, 0.16); color: #4fd19e; }
+  @media (max-width: 640px) { .pair { grid-template-columns: 1fr; } }
+
+  /* Stage strip: one row that scrolls on phones */
+  .strip { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 32px; }
+  .strip figure { margin: 0; }
+  .strip figcaption { font-size: 13px; margin-top: 6px; }
+  @media (max-width: 860px) { .strip { grid-template-columns: repeat(5, 70%); overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 8px; } .strip figure { scroll-snap-align: start; } }
+
+  .callout { background: var(--bg-raised); border: 1px solid var(--line); border-left: 3px solid var(--jade); border-radius: 6px; padding: 24px 28px; margin: 40px 0 0; }
+  .callout h3 { margin-top: 0; }
+  .callout p:last-child { margin-bottom: 0; }
+  .swatches { display: flex; flex-wrap: wrap; gap: 10px 20px; margin: 4px 0 16px; padding: 0; list-style: none; font-size: 14px; color: var(--muted); }
+  .swatches li { display: flex; align-items: center; gap: 8px; }
+  .swatches i { width: 14px; height: 14px; border-radius: 3px; display: inline-block; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 16px; }
+  th, td { text-align: left; padding: 10px 12px 10px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-weight: 600; color: var(--muted); font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; }
+  td.n { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .table-scroll { overflow-x: auto; }
+
+  .cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 24px; }
+  .card { background: var(--bg-raised); border: 1px solid var(--line); border-radius: 6px; padding: 20px 22px; }
+  .card h4 { margin: 0 0 6px; font-size: 16px; font-weight: 600; }
+  .card p { font-size: 15px; color: var(--muted); margin: 0; }
+  @media (max-width: 760px) { .cards { grid-template-columns: 1fr; } }
+
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 24px 0 0; }
+  .stat { border-top: 2px solid var(--sand); padding-top: 12px; }
+  .stat b { display: block; font-family: Fraunces, Georgia, serif; font-size: 30px; font-weight: 700; }
+  .stat span { font-size: 14px; color: var(--muted); }
+  @media (max-width: 640px) { .stats { grid-template-columns: 1fr; } }
+
+  ol.cues { padding-left: 22px; margin: 0; }
+  ol.cues li { margin-bottom: 10px; }
+  ol.cues em { color: var(--sand); font-style: normal; font-weight: 600; }
+
+  /* Annotated critique frame */
+  .annotated { position: relative; }
+  .pin {
+    position: absolute; transform: translate(-50%, -50%);
+    width: 30px; height: 30px; border-radius: 50%;
+    display: grid; place-items: center;
+    font: 700 14px/1 Inter, sans-serif; color: #14121c;
+    box-shadow: 0 0 0 3px rgba(20, 18, 28, 0.75);
+  }
+  .pin.good { background: #4fd19e; }
+  .pin.bad { background: var(--danger); }
+  .verdicts { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 32px; }
+  .verdicts ol { padding: 0; margin: 0; list-style: none; }
+  .verdicts li { display: grid; grid-template-columns: 30px 1fr; gap: 12px; padding: 12px 0; border-top: 1px solid var(--line); }
+  .verdicts li .pin { position: static; transform: none; box-shadow: none; }
+  .verdicts b { display: block; font-weight: 600; }
+  .verdicts span.fix { display: block; color: var(--muted); font-size: 15px; margin-top: 4px; }
+  @media (max-width: 760px) { .verdicts { grid-template-columns: 1fr; gap: 0; } }
+
+  footer { padding: 64px 0 80px; color: var(--muted); font-size: 15px; }
+  footer h2 { color: var(--text); font-size: 28px; margin-bottom: 12px; }
+
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap">
+    <strong>Jordan Fairley</strong>
+    <nav aria-label="Case studies">
+      <a href="#readability">Readability</a>
+      <a href="#ai-output">AI output</a>
+      <a href="#feel">Game feel</a>
+      <a href="#interface">Interface</a>
+      <a href="#critique">Self-critique</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <video id="hero-video" src="media/hero.mp4" poster="media/hero-poster.jpg" muted loop playsinline preload="metadata"
+      aria-label="Thirteen seconds of four-player play on the Wake: a team holds against a swarm at dusk."></video>
+    <div class="wrap hero-copy">
+      <p class="eyebrow">Design case study</p>
+      <h1>Wormwake</h1>
+      <p class="pitch">A top-down co-op survival game for 1–4 players, set on Saltmere, a desert planet where colossal Maws surface through the sand. Hold a harvest site against escalating swarms, collect gleam in the Maws' wake, and level up as a team.</p>
+      <p class="role">Solo creator and art director. I set the design rules, judged and corrected every AI-generated model, image, sound and song, and directed AI coding agents to build it in Unity 6.</p>
+      <ul class="chips">
+        <li>Game design</li><li>Art direction</li><li>UI/UX</li><li>Game feel</li><li>AI-output curation</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 01 Readability -->
+  <section class="case" id="readability">
+    <div class="wrap">
+      <div class="case-head">
+        <span class="num">01</span>
+        <h2>Readable chaos, made measurable</h2>
+        <p class="lede">With 150 enemies, four players and their effects on screen, "does it read?" can't be judged once by eye. I turned it into rules a test can check on every change.</p>
+      </div>
+
+      <div class="cols">
+        <div>
+          <p>Moving the stages to realistic textures made every new texture or effect a chance to bury the one thing a player must see: the gleam they're fighting for. So the look became a set of rulings with numbers behind them.</p>
+          <ul class="swatches" aria-label="Color owners">
+            <li><i style="background: var(--gleam)"></i>Gleam (XP) only</li>
+            <li><i style="background: var(--danger)"></i>Danger only</li>
+            <li><i style="background: var(--jade)"></i>The team's strikes</li>
+            <li><i style="background: #f2c94c"></i><i style="background: #3fc7e0"></i><i style="background: #d94fb0"></i><i style="background: #9bd13f"></i>Players</li>
+          </ul>
+        </div>
+        <ul class="rules">
+          <li><b>Every color has one owner.</b>Cyan-teal means gleam and nothing else. Warm orange on the ground means danger. No stage ground uses a player color, water blue or the ward color.</li>
+          <li><b>Contrast is a gate, not a feeling.</b>Gleam sits at least 30 ΔE from the ground around it, and a teammate's marker at least 10, checked on 20 shots: 5 stages × start, middle, edge and first ground mark.</li>
+          <li><b>Effects get their own distances.</b>At least 30 ΔE from gleam, 20 from danger telegraphs, 15 from player colors. Purchased VFX get repainted until they pass.</li>
+          <li><b>What looks solid is solid.</b>Anything taller than 0.5 m stands on collision. Walls are capped at 3.5 m because 5 m hid about 3.5 m of ground behind each one from the 55° camera.</li>
+        </ul>
+      </div>
+
+      <div class="strip">
+        <figure><img src="media/stage-brinepan.jpg" alt="Brinepan: white cracked salt crust, a swarm of pale skitters and cyan gleam." loading="lazy"><figcaption>Brinepan · salt</figcaption></figure>
+        <figure><img src="media/stage-ochre-drifts.jpg" alt="The Ochre Drifts: rippled orange dunes." loading="lazy"><figcaption>Ochre Drifts · dunes</figcaption></figure>
+        <figure><img src="media/stage-rustgate-canyons.jpg" alt="Rustgate Canyons: rust sandstone ground and pillars." loading="lazy"><figcaption>Rustgate · sandstone</figcaption></figure>
+        <figure><img src="media/stage-ribfields.jpg" alt="The Ribfields: dark violet grit between giant bones." loading="lazy"><figcaption>Ribfields · bone grit</figcaption></figure>
+        <figure><img src="media/stage-wake.jpg" alt="The Wake: dark fused glass at dusk, the team surrounded." loading="lazy"><figcaption>The Wake · fused glass</figcaption></figure>
+      </div>
+
+      <h3>The numbers, measured on today's build</h3>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Stage</th><th>Gleam ΔE (gate 30)</th><th>Marker ΔE (gate 10)</th><th>What it took</th></tr></thead>
+          <tbody>
+            <tr><td>Brinepan</td><td class="n">37.3–38.9</td><td class="n">16.6–17.6</td><td>Started at 20.5, failing. Salt darkened a step (#D6CCB8); the paler tone only on plate tops.</td></tr>
+            <tr><td>Ochre Drifts</td><td class="n">50.1–56.8</td><td class="n">13.3–20.1</td><td>Soft sand darkened and given a dark rim, so the slow zone reads without a new color.</td></tr>
+            <tr><td>Rustgate Canyons</td><td class="n">63.8–67.4</td><td class="n">10.2–23.0</td><td>The tightest marker margin in the game, at a ground mark.</td></tr>
+            <tr><td>Ribfields</td><td class="n">50.0–57.8</td><td class="n">48.2–52.0</td><td>Dark grit makes every signal pop.</td></tr>
+            <tr><td>The Wake</td><td class="n">50.1–58.3</td><td class="n">46.4–51.2</td><td>Ground moved to dark glass, because a squall over violet-gray "barely showed".</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pair" style="margin-top: 32px">
+        <figure>
+          <img src="media/brinepan-flat.jpg" alt="Test frame: Brinepan drawn flat-shaded, with stand-in spheres, discs and cyan gleam dots." loading="lazy">
+          <figcaption>The test rig: stand-in shapes on the stage's flat-shaded ground…</figcaption>
+        </figure>
+        <figure>
+          <img src="media/brinepan-textured.jpg" alt="The same test frame on Brinepan's realistic salt texture." loading="lazy">
+          <figcaption>…and on its realistic texture. The gate samples the ground around every gleam dot and marker and fails the build below the line.</figcaption>
+        </figure>
+      </div>
+
+      <div class="callout">
+        <h3>A ruling in full: jade over orange</h3>
+        <p>The team's strikes needed a color. Flare orange was the obvious pick, but it matched the rockfall warning ring. I chose jade instead, because its nearest colors are all friendly (gleam, healing, player 4), so a misread still leads somewhere good.</p>
+        <p>Blink rates are kept apart for the same reason: rockfall at 2.5 Hz, glass squalls at 3 Hz, the team's dome at 1.6 Hz.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 AI output -->
+  <section class="case" id="ai-output">
+    <div class="wrap">
+      <div class="case-head">
+        <span class="num">02</span>
+        <h2>Judging AI output: keep, cut or rebuild</h2>
+        <p class="lede">Almost every asset started as AI output: Meshy 3D models, generated 2D art, music and sound. None of it went in as generated. Each piece got a verdict against the game's rules.</p>
+      </div>
+
+      <div class="pair">
+        <figure>
+          <span class="tag cut">Generated concept</span>
+          <img src="media/maw-concept.jpg" alt="Generated concept sheet of the Maw: a segmented armored burrower, top and side views." loading="lazy">
+          <figcaption>The Maw concept. An earlier generated sheet came out twice too big against its human figure, so its scale was rejected.</figcaption>
+        </figure>
+        <figure>
+          <span class="tag kept">In game</span>
+          <img src="media/maw-model.jpg" alt="The Maw model breaching, seen from the gameplay camera, inside its warning ring." loading="lazy">
+          <figcaption>Every model is rendered from the real gameplay camera before it ships, because detail under a metre reads small from above.</figcaption>
+        </figure>
+      </div>
+
+      <figure>
+        <img src="media/ground-slam.jpg" alt="Two filmstrips of a slam animation: the full take on top, the kept frames 31 to 50 below." loading="lazy">
+        <figcaption><b>Top:</b> Meshy's full Ground Slam, which read as arms flailing upward. <b>Bottom:</b> the frames I kept (31–50, played 1.44× faster): arms at the top, the slam, the hold.</figcaption>
+      </figure>
+
+      <figure>
+        <img src="media/gunship-wings.jpg" alt="The gunship from above three times, its four wings at rest, raised and lowered." loading="lazy">
+        <figcaption>The gunship. Meshy's auto-rig ran bones through the hull and wings, so I took the static model and split the wings by hand. They shimmer fast and shallow like an insect's, never a slow flap, to stay clear of a well-known franchise craft.</figcaption>
+      </figure>
+
+      <h3>More calls</h3>
+      <div class="cards">
+        <div class="card"><h4>Stage concept art</h4><p>Cut the teal crystals (decor that looks like gleam is a readability bug), an emblem that read as a crypto logo, and framing 1.5–2× too close.</p></div>
+        <div class="card"><h4>Backpedal animation</h4><p>Meshy's walk-backward had its travel baked into the hips: it clipped, lagged, and at speed read as a frantic shuffle. Replaced with a forward run played backwards.</p></div>
+        <div class="card"><h4>Maw explosion</h4><p>A purchased cartoon burst read as magic in a realistic world. Rebuilt as a sand-and-rock burst.</p></div>
+        <div class="card"><h4>Icons</h4><p>28 generated icons reviewed as silhouettes at 34 and 64 px; palettes moved to the color owners, a beam shortened to fit its frame.</p></div>
+      </div>
+
+      <div class="callout" style="border-left-color: var(--sand)">
+        <h3>The big call: low-poly to realistic</h3>
+        <p>The game first had flat-shaded low-poly art. Watching it in motion, I judged the flat shading and empty ground to be the problem, not the models. I moved the 3D world to PBR with 2K textures (4K for the ground) and kept the 2D UI stylized on purpose. A day later I retired every code-built low-poly prop, because next to the textured models they broke the look.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 Game feel -->
+  <section class="case" id="feel">
+    <div class="wrap">
+      <div class="case-head">
+        <span class="num">03</span>
+        <h2>Game feel, tuned by hand</h2>
+        <p class="lede">Co-op players share one clock, so there's no hit-stop and the pause menu never pauses. Every bit of impact has to come from animation, light and sound.</p>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><b>0.28 → 1.0 s</b><span>Dodge-roll invulnerability. The default window ended with the roll; I stretched it to a full second, well past it, and let it beat even the Maw.</span></div>
+        <div class="stat"><b>3.0 → 1.04 s</b><span>Death animation, with three directional variants, so bodies land and sink before they clutter the swarm.</span></div>
+        <div class="stat"><b>0.2 s</b><span>Click buffer, so a hurried press isn't lost.</span></div>
+      </div>
+
+      <figure>
+        <img src="media/death-lunger.jpg" alt="Eight frames of a Lunger's death, 120 ms apart: white hit flash, thrown away from the killer, lands and sinks in dust." loading="lazy">
+        <figcaption>A kill should read as a kill, not a pop. Eight frames 120 ms apart: a white flash (0.08 s), the body thrown away from the killer, the landing in dust. For humanoid enemies I overruled the throw: their own death clip read better.</figcaption>
+      </figure>
+
+      <div class="cols" style="margin-top: 16px">
+        <div>
+          <h3>Aiming that reads at a glance</h3>
+          <p>Every character always faces its player's cursor, not just while attacking, so you can read the whole team's aim at a glance. Firing calls the Maw (through the Tremor meter) only when an enemy is in reach, so shooting at empty sand doesn't punish you.</p>
+        </div>
+        <div>
+          <h3>Four effects passes</h3>
+          <p>Weapon identity (the blade as a bone ribbon, the pulse as a sand shockwave), then animation (legs follow movement, backpedal past 110°), then contact (muzzle flash, kick, sparks capped at 4 a frame for performance), then enemies react (wind-up glow, stagger, death sink).</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 Interface -->
+  <section class="case" id="interface">
+    <div class="wrap">
+      <div class="case-head">
+        <span class="num">04</span>
+        <h2>Interface: the revive flow</h2>
+        <p class="lede">Playtesting showed a gap: nothing told the team that someone was down, where they were, or that a revive was under way.</p>
+      </div>
+
+      <div class="cols">
+        <figure style="margin-top: 0">
+          <video src="media/revive.mp4" poster="media/revive-frame.jpg" controls muted loop playsinline preload="none"
+            aria-label="A full revive: the teammate is downed off screen, the player walks over, the ring fills, they stand up."></video>
+          <figcaption>A full revive, both ways round, captured in game with the HUD.</figcaption>
+        </figure>
+        <div>
+          <p>Five cues, each answering the one question a player has in that moment:</p>
+          <ol class="cues">
+            <li><em>Who is down?</em> A banner in their color.</li>
+            <li><em>Where are they?</em> An arrow at the screen edge in their color while they're off screen.</li>
+            <li><em>How long do I have?</em> A timer on their row of the team panel.</li>
+            <li><em>Am I reviving them?</em> A ring under them that fills clockwise while you stand in it.</li>
+            <li><em>Did it work?</em> The ring completes and the banner clears.</li>
+          </ol>
+          <h3>What testing caught</h3>
+          <p>Recording the flow frame by frame found three faults that reading the layout never would: the ring was culled from some angles, the HUD was squeezed into a 260 px strip, and the banner clipped its own text.</p>
+        </div>
+      </div>
+
+      <div class="cards">
+        <div class="card"><h4>Pick, then Buy</h4><p>Spending upgrade currency takes two steps, so a stray click can't spend it. Respeccing asks once more, because rebuilding a tree is tedious.</p></div>
+        <div class="card"><h4>One vocabulary</h4><p>Fast and Slow attack tags show on both the level-up choices and the HUD, so the choice and its effect use the same words.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 Self-critique -->
+  <section class="case" id="critique">
+    <div class="wrap">
+      <div class="case-head">
+        <span class="num">05</span>
+        <h2>A critique of my own frame</h2>
+        <p class="lede">A real mid-run frame, with its open problems. The same eye, pointed at my own work.</p>
+      </div>
+
+      <figure class="annotated" style="margin-top: 0">
+        <img src="media/critique-wake.jpg" alt="Mid-run frame on the Wake: the player downed in the center, a dense swarm above with blue ward bubbles, the HUD at the corners." loading="lazy">
+        <span class="pin good" style="left: 7%; top: 88%">1</span>
+        <span class="pin good" style="left: 23%; top: 27%">2</span>
+        <span class="pin good" style="left: 17.5%; top: 61%">3</span>
+        <span class="pin bad" style="left: 19%; top: 21%">4</span>
+        <span class="pin bad" style="left: 9%; top: 6%">5</span>
+        <span class="pin bad" style="left: 3%; top: 65%">6</span>
+      </figure>
+
+      <div class="verdicts">
+        <ol aria-label="What works">
+          <li><span class="pin good">1</span><div><b>Gleam reads first.</b>Cyan shards are the most saturated thing on the dark glass, 50+ ΔE clear, so the eye goes to the reward.</div></li>
+          <li><span class="pin good">2</span><div><b>Danger is warm, the team is cool.</b>Orange wind-ups and lobs separate from the team's jade and cyan without any outline.</div></li>
+          <li><span class="pin good">3</span><div><b>Every player is findable in under a second</b>through their slot-colored ground disc.</div></li>
+        </ol>
+        <ol aria-label="What doesn't">
+          <li><span class="pin bad">4</span><div><b>The obsidian reads as granite.</b>The glass shards come out speckled lilac, so the stage loses its one idea: a desert fused by heat.<span class="fix">Fix: fewer, larger, darker facets with a sharp highlight, less mid-tone noise.</span></div></li>
+          <li><span class="pin bad">5</span><div><b>HUD panels go muddy.</b>Semi-transparent brown reads as dirt over bright sand.<span class="fix">Fix: a neutral dark panel at higher opacity, or a 1 px light inner edge.</span></div></li>
+          <li><span class="pin bad">6</span><div><b>Damage numbers are too small</b>at 1080p to read in a swarm, so they become noise.<span class="fix">Fix: scale with resolution; past ~50 enemies show only crits and kills.</span></div></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <h2>Jordan Fairley</h2>
+    <p>Wormwake is in development and the project is private. Everything on this page is captured from the game as it stands.</p>
+    <p><!-- Add your contact links here, e.g. email and LinkedIn. --></p>
+  </div>
+</footer>
+
+<script>
+  // The hero loops only for viewers who haven't asked for reduced motion.
+  (function () {
+    var video = document.getElementById('hero-video');
+    if (!video) return;
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) { video.setAttribute('controls', ''); return; }
+    video.autoplay = true;
+    var playing = video.play();
+    if (playing && playing.catch) playing.catch(function () { video.setAttribute('controls', ''); });
+  })();
+</script>
+</body>
+</html>
