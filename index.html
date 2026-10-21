@@ -46,7 +46,7 @@
 
   /* Hero */
   .hero { position: relative; border-bottom: 1px solid var(--line); }
-  .hero video { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; max-height: 78vh; }
+  .hero .banner { width: 100%; aspect-ratio: 21 / 9; object-fit: cover; max-height: 78vh; }
   .hero-copy { padding-top: 40px; padding-bottom: 56px; }
   .eyebrow { font-size: 13px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--sand); margin: 0 0 12px; }
   h1, h2, h3 { font-family: Fraunces, Georgia, serif; font-weight: 700; line-height: 1.12; margin: 0; }
@@ -159,9 +159,9 @@
 
 <main>
   <section class="hero">
-    <video id="hero-video" src="media/menu.mp4" poster="media/menu-poster.jpg" muted loop playsinline preload="metadata"
-      aria-label="Wormwake's main menu art: Sandwardens on a ridge above the dunes at sunset, wind moving their cloaks."></video>
-    <div class="wrap hero-copy">
+    <img class="banner" src="media/banner-1920.jpg" srcset="media/banner-1920.jpg 1920w, media/banner-3840.jpg 3840w" sizes="100vw"
+      width="3840" height="1645" fetchpriority="high"
+      alt="The four Sandwardens on the Wake's dark fused glass at dusk, each on a ground disc in their color, one spraying a stream of water into a swarm of pale skitters.">    <div class="wrap hero-copy">
       <p class="eyebrow">Design case study</p>
       <h1>Wormwake</h1>
       <p class="pitch">A top-down co-op survival game for 1–4 players, set on Saltmere, a desert planet where colossal Maws surface through the sand. Hold a harvest site against escalating swarms, collect gleam in the Maws' wake, and level up as a team.</p>
@@ -405,17 +405,5 @@
   </div>
 </footer>
 
-<script>
-  // The hero loops only for viewers who haven't asked for reduced motion.
-  (function () {
-    var video = document.getElementById('hero-video');
-    if (!video) return;
-    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduce) { video.setAttribute('controls', ''); return; }
-    video.autoplay = true;
-    var playing = video.play();
-    if (playing && playing.catch) playing.catch(function () { video.setAttribute('controls', ''); });
-  })();
-</script>
 </body>
 </html>
