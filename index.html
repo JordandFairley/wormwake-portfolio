@@ -99,7 +99,8 @@
   th, td { text-align: left; padding: 10px 12px 10px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
   th { font-weight: 600; color: var(--muted); font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; }
   td.n { font-variant-numeric: tabular-nums; white-space: nowrap; }
-  .table-scroll { overflow-x: auto; }
+  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .table-scroll table { min-width: 620px; }
 
   .cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 24px; }
   .card { background: var(--bg-raised); border: 1px solid var(--line); border-radius: 6px; padding: 20px 22px; }
@@ -139,6 +140,19 @@
   footer { padding: 64px 0 80px; color: var(--muted); font-size: 15px; }
   footer h2 { color: var(--text); font-size: 28px; margin-bottom: 12px; }
 
+  /* Anchors land with the heading clear of the sticky bar. */
+  section[id] { scroll-margin-top: 64px; }
+
+  .summary { margin: 28px 0 0; padding: 0; max-width: 820px; border-top: 1px solid var(--line); }
+  .summary div { display: grid; grid-template-columns: 120px 1fr; gap: 0 20px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .summary dt { font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--sand); padding-top: 3px; }
+  .summary dd { margin: 0; }
+  .summary .thesis dd { font-family: Fraunces, Georgia, serif; font-size: 21px; font-weight: 700; }
+  @media (max-width: 640px) { .summary div { grid-template-columns: 1fr; gap: 4px; } }
+
+  .group-head { font-family: Inter, system-ui, sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 0 0 4px; }
+  .pair-head { margin: 48px 0 12px; }
+
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 </style>
 </head>
@@ -148,8 +162,8 @@
   <div class="wrap">
     <strong>Jordan Fairley</strong>
     <nav aria-label="Case studies">
-      <a href="#readability">Readability</a>
       <a href="#ai-output">AI output</a>
+      <a href="#readability">Readability</a>
       <a href="#feel">Game feel</a>
       <a href="#interface">Interface</a>
       <a href="#critique">Self-critique</a>
@@ -165,18 +179,103 @@
       <p class="eyebrow">Design case study</p>
       <h1>Wormwake</h1>
       <p class="pitch">A top-down co-op survival game for 1–4 players, set on Saltmere, a desert planet where colossal Maws surface through the sand. Hold a harvest site against escalating swarms, collect gleam in the Maws' wake, and level up as a team.</p>
-      <p class="role">Solo creator and art director. I set the design rules, judged and corrected every AI-generated model, image, sound and song, and directed AI coding agents to build it in Unity 6.</p>
+      <dl class="summary">
+        <div><dt>The game</dt><dd>A top-down co-op survival game for 1–4 players, set on Saltmere, a desert planet where colossal Maws surface through the sand.</dd></div>
+        <div><dt>My role</dt><dd>Solo creator and art director. I set the design rules, judged and corrected every AI-generated model, image, sound and song, and directed AI coding agents to build it in Unity 6.</dd></div>
+        <div class="thesis"><dt>The thesis</dt><dd>Every visual decision is a ruling a test can check.</dd></div>
+      </dl>
       <ul class="chips">
         <li>Game design</li><li>Art direction</li><li>UI/UX</li><li>Game feel</li><li>AI-output curation</li>
       </ul>
     </div>
   </section>
 
-  <!-- 01 Readability -->
-  <section class="case" id="readability">
+  <!-- 01 AI output -->
+  <section class="case" id="ai-output">
     <div class="wrap">
       <div class="case-head">
         <span class="num">01</span>
+        <h2>Judging AI output: keep, cut or rebuild</h2>
+        <p class="lede">Almost every asset started as AI output: Meshy 3D models, generated 2D art, music and sound. None of it went in as generated. Each piece got a verdict against the game's rules.</p>
+      </div>
+
+      <h3 class="pair-head">The Maw: concept to model</h3>
+      <div class="pair">
+        <figure>
+          <span class="tag cut">Retired</span>
+          <img src="media/maw-concept-lowpoly.jpg" alt="Earlier low-poly Maw concept sheet, top and side views, teal glowing seams, a tiny human figure by the side view." loading="lazy">
+          <figcaption>The first sheet came out twice too big against its human figure and no longer exists. This is its corrected-scale successor; its teal seams broke the gleam rule, and it retired with the low-poly look.</figcaption>
+        </figure>
+        <figure>
+          <span class="tag kept">Kept</span>
+          <img src="media/maw-concept.jpg" alt="Realistic Maw concept sheet: a segmented armored burrower, top and side views." loading="lazy">
+          <figcaption>The realistic sheet the model was built from: same anatomy and sideways mandibles, no teal.</figcaption>
+        </figure>
+      </div>
+
+      <figure>
+        <img src="media/maw-model.jpg" alt="The Maw model breaching, seen from the gameplay camera, inside its warning ring." loading="lazy">
+        <figcaption>Every model is rendered from the real gameplay camera before it ships, because detail under a metre reads small from above.</figcaption>
+      </figure>
+
+      <h3 class="pair-head">The Maw's eruption</h3>
+      <div class="pair">
+        <figure>
+          <span class="tag cut">Cut</span>
+          <img src="media/burst-cartoon.jpg" alt="Audition frames of a purchased cartoon explosion: white rays and yellow swirled smoke puffs." loading="lazy">
+          <figcaption>The purchased cartoon burst: rays and swirl-smoke read as magic in a realistic world.</figcaption>
+        </figure>
+        <figure>
+          <span class="tag kept">Rebuilt</span>
+          <img src="media/burst-rebuilt.jpg" alt="The Maw breaking through Brinepan's salt crust, throwing rocks and dust." loading="lazy">
+          <figcaption>The rebuilt eruption: rocks and dust thrown from the ground the Maw breaks through.</figcaption>
+        </figure>
+      </div>
+
+      <h3 class="pair-head">Stage concept art</h3>
+      <div class="pair">
+        <figure>
+          <span class="tag cut">Generated concept</span>
+          <img src="media/concept-brinepan.jpg" alt="Generated Brinepan concept: hex salt plates, salt stacks, a harvest rig, and teal crystals scattered at the stacks' feet." loading="lazy">
+          <figcaption>Kept the salt plates, stacks and harvest rig. Cut the teal crystals (decor that looks like gleam is a readability bug) and the framing, 1.5–2× too close.</figcaption>
+        </figure>
+        <figure>
+          <span class="tag kept">In game</span>
+          <img src="media/stage-brinepan.jpg" alt="Brinepan in game: white cracked salt crust and stacks, cyan gleam on the ground, no teal decor." loading="lazy">
+          <figcaption>Brinepan in game: cyan appears only as gleam, at the gameplay camera's real distance.</figcaption>
+        </figure>
+      </div>
+
+      <h3 class="pair-head">The Ground Slam</h3>
+
+      <figure>
+        <img src="media/ground-slam.jpg" alt="Two filmstrips of a slam animation: the full take on top, the kept frames 31 to 50 below." loading="lazy">
+        <figcaption><b>Top:</b> Meshy's full Ground Slam, which read as arms flailing upward. <b>Bottom:</b> the frames I kept (31–50, played 1.44× faster): arms at the top, the slam, the hold.</figcaption>
+      </figure>
+
+      <figure>
+        <img src="media/gunship-wings.jpg" alt="The gunship from above three times, its four wings at rest, raised and lowered." loading="lazy">
+        <figcaption>The gunship. Meshy's auto-rig ran bones through the hull and wings, so I took the static model and split the wings by hand. They shimmer fast and shallow like an insect's, never a slow flap.</figcaption>
+      </figure>
+
+      <h3>More calls</h3>
+      <div class="cards">
+        <div class="card"><h4>Backpedal animation</h4><p>Meshy's walk-backward had its travel baked into the hips: it clipped, lagged, and at speed read as a frantic shuffle. Replaced with a forward run played backwards. The fault only shows in motion, so it has no still pair here.</p></div>
+        <div class="card"><h4>A stage emblem</h4><p>Rustgate's concept carried a banner emblem that read as a crypto logo, so the game uses a plain shape. The rejected emblem survives only in that concept image.</p></div>
+        <div class="card"><h4>Icons</h4><p>28 generated icons reviewed as silhouettes at 34 and 64 px; palettes moved to the color owners, a beam shortened to fit its frame.</p></div>
+      </div>
+
+      <div class="callout" style="border-left-color: var(--sand)">
+        <h3>The big call: low-poly to realistic</h3>
+        <p>The game first had flat-shaded low-poly art. Watching it in motion, I judged the flat shading and empty ground to be the problem, not the models. I moved the 3D world to PBR with 2K textures (4K for the ground) and kept the 2D UI stylized on purpose. A day later I retired every code-built low-poly prop, because next to the textured models they broke the look.</p>
+      </div>
+    </div>
+  </section>
+  <!-- 02 Readability -->
+  <section class="case" id="readability">
+    <div class="wrap">
+      <div class="case-head">
+        <span class="num">02</span>
         <h2>Readable chaos, made measurable</h2>
         <p class="lede">With 150 enemies, four players and their effects on screen, "does it read?" can't be judged once by eye. I turned it into rules a test can check on every change.</p>
       </div>
@@ -237,53 +336,13 @@
         <p>The team's strikes needed a color. Flare orange was the obvious pick, but it matched the rockfall warning ring. I chose jade instead, because its nearest colors are all friendly (gleam, healing, player 4), so a misread still leads somewhere good.</p>
         <p>Blink rates are kept apart for the same reason: rockfall at 2.5 Hz, glass squalls at 3 Hz, the team's dome at 1.6 Hz.</p>
       </div>
-    </div>
-  </section>
-
-  <!-- 02 AI output -->
-  <section class="case" id="ai-output">
-    <div class="wrap">
-      <div class="case-head">
-        <span class="num">02</span>
-        <h2>Judging AI output: keep, cut or rebuild</h2>
-        <p class="lede">Almost every asset started as AI output: Meshy 3D models, generated 2D art, music and sound. None of it went in as generated. Each piece got a verdict against the game's rules.</p>
-      </div>
-
-      <div class="pair">
-        <figure>
-          <span class="tag cut">Generated concept</span>
-          <img src="media/maw-concept.jpg" alt="Generated concept sheet of the Maw: a segmented armored burrower, top and side views." loading="lazy">
-          <figcaption>The Maw concept. An earlier generated sheet came out twice too big against its human figure, so its scale was rejected.</figcaption>
-        </figure>
-        <figure>
-          <span class="tag kept">In game</span>
-          <img src="media/maw-model.jpg" alt="The Maw model breaching, seen from the gameplay camera, inside its warning ring." loading="lazy">
-          <figcaption>Every model is rendered from the real gameplay camera before it ships, because detail under a metre reads small from above.</figcaption>
-        </figure>
-      </div>
-
-      <figure>
-        <img src="media/ground-slam.jpg" alt="Two filmstrips of a slam animation: the full take on top, the kept frames 31 to 50 below." loading="lazy">
-        <figcaption><b>Top:</b> Meshy's full Ground Slam, which read as arms flailing upward. <b>Bottom:</b> the frames I kept (31–50, played 1.44× faster): arms at the top, the slam, the hold.</figcaption>
-      </figure>
-
-      <figure>
-        <img src="media/gunship-wings.jpg" alt="The gunship from above three times, its four wings at rest, raised and lowered." loading="lazy">
-        <figcaption>The gunship. Meshy's auto-rig ran bones through the hull and wings, so I took the static model and split the wings by hand. They shimmer fast and shallow like an insect's, never a slow flap, to stay clear of a well-known franchise craft.</figcaption>
-      </figure>
-
-      <h3>More calls</h3>
-      <div class="cards">
-        <div class="card"><h4>Stage concept art</h4><p>Cut the teal crystals (decor that looks like gleam is a readability bug), an emblem that read as a crypto logo, and framing 1.5–2× too close.</p></div>
-        <div class="card"><h4>Backpedal animation</h4><p>Meshy's walk-backward had its travel baked into the hips: it clipped, lagged, and at speed read as a frantic shuffle. Replaced with a forward run played backwards.</p></div>
-        <div class="card"><h4>Maw explosion</h4><p>A purchased cartoon burst read as magic in a realistic world. Rebuilt as a sand-and-rock burst.</p></div>
-        <div class="card"><h4>Icons</h4><p>28 generated icons reviewed as silhouettes at 34 and 64 px; palettes moved to the color owners, a beam shortened to fit its frame.</p></div>
-      </div>
-
-      <div class="callout" style="border-left-color: var(--sand)">
-        <h3>The big call: low-poly to realistic</h3>
-        <p>The game first had flat-shaded low-poly art. Watching it in motion, I judged the flat shading and empty ground to be the problem, not the models. I moved the 3D world to PBR with 2K textures (4K for the ground) and kept the 2D UI stylized on purpose. A day later I retired every code-built low-poly prop, because next to the textured models they broke the look.</p>
-      </div>
+      <h3 style="margin-top: 48px">Accessibility, checked</h3>
+      <ul class="rules">
+        <li><b>Contrast.</b>Gleam at least 30 ΔE from the ground around it and teammate markers at least 10, on all 20 test shots (the table above); effects at least 30 from gleam, 20 from danger and 15 from player colors.</li>
+        <li><b>Readability.</b>28 icons reviewed as silhouettes at 34 and 64 px. Damage numbers are too small at 1080p; scaling them with resolution is the fix named in the self-critique.</li>
+        <li><b>Target size.</b>The revive target is a wide ring on the ground, not a button to hit, and Pick-then-Buy splits spending into two clicks so a stray one can't spend.</li>
+        <li><b>Information architecture.</b>The five revive cues each answer one question: who is down, where, how long, am I reviving, did it work.</li>
+      </ul>
     </div>
   </section>
 
@@ -303,8 +362,10 @@
       </div>
 
       <figure>
-        <video src="media/hero.mp4" poster="media/hero-poster.jpg" controls muted loop playsinline preload="none"
-          aria-label="Thirteen seconds of four-player play on the Wake: a team holds against a swarm at dusk."></video>
+        <video class="autoplay" poster="media/hero-poster.jpg" controls muted loop playsinline autoplay preload="metadata" width="1286" height="724"
+          aria-label="Thirteen seconds of four-player play on the Wake: a team holds against a swarm at dusk.">
+          <source src="media/hero.mp4" type="video/mp4">
+        </video>
         <figcaption>Thirteen seconds of a four-player run on the Wake at 150 enemies, captured in game with the HUD.</figcaption>
       </figure>
 
@@ -337,8 +398,10 @@
 
       <div class="cols">
         <figure style="margin-top: 0">
-          <video src="media/revive.mp4" poster="media/revive-frame.jpg" controls muted loop playsinline preload="none"
-            aria-label="A full revive: the teammate is downed off screen, the player walks over, the ring fills, they stand up."></video>
+          <video class="autoplay" poster="media/revive-frame.jpg" controls muted loop playsinline autoplay preload="metadata" width="1286" height="724"
+            aria-label="A full revive: the teammate is downed off screen, the player walks over, the ring fills, they stand up.">
+            <source src="media/revive.mp4" type="video/mp4">
+          </video>
           <figcaption>A full revive, both ways round, captured in game with the HUD.</figcaption>
         </figure>
         <div>
@@ -368,7 +431,7 @@
       <div class="case-head">
         <span class="num">05</span>
         <h2>A critique of my own frame</h2>
-        <p class="lede">A real mid-run frame, with its open problems. The same eye, pointed at my own work.</p>
+        <p class="lede">A real mid-run frame, with its open problems.</p>
       </div>
 
       <figure class="annotated" style="margin-top: 0">
@@ -382,16 +445,22 @@
       </figure>
 
       <div class="verdicts">
-        <ol aria-label="What works">
+        <div>
+        <h3 class="group-head">What holds</h3>
+        <ol aria-label="What holds">
           <li><span class="pin good">1</span><div><b>Gleam reads first.</b>Cyan shards are the most saturated thing on the dark glass, 50+ ΔE clear, so the eye goes to the reward.</div></li>
           <li><span class="pin good">2</span><div><b>Danger is warm, the team is cool.</b>Orange wind-ups and lobs separate from the team's jade and cyan without any outline.</div></li>
           <li><span class="pin good">3</span><div><b>Every player is findable in under a second</b>through their slot-colored ground disc.</div></li>
         </ol>
-        <ol aria-label="What doesn't">
+        </div>
+        <div>
+        <h3 class="group-head">What fails, and the fix</h3>
+        <ol aria-label="What fails, and the fix">
           <li><span class="pin bad">4</span><div><b>The obsidian reads as granite.</b>The glass shards come out speckled lilac, so the stage loses its one idea: a desert fused by heat.<span class="fix">Fix: fewer, larger, darker facets with a sharp highlight, less mid-tone noise.</span></div></li>
           <li><span class="pin bad">5</span><div><b>HUD panels go muddy.</b>Semi-transparent brown reads as dirt over bright sand.<span class="fix">Fix: a neutral dark panel at higher opacity, or a 1 px light inner edge.</span></div></li>
           <li><span class="pin bad">6</span><div><b>Damage numbers are too small</b>at 1080p to read in a swarm, so they become noise.<span class="fix">Fix: scale with resolution; past ~50 enemies show only crits and kills.</span></div></li>
         </ol>
+        </div>
       </div>
     </div>
   </section>
@@ -404,6 +473,13 @@
     <p><!-- Add your contact links here, e.g. email and LinkedIn. --></p>
   </div>
 </footer>
+
+<script>
+  // Viewers who asked for reduced motion get the poster and the controls, not autoplay.
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.querySelectorAll('video.autoplay').forEach(function (v) { v.removeAttribute('autoplay'); v.pause(); });
+  }
+</script>
 
 </body>
 </html>
